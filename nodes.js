@@ -24,6 +24,8 @@ function initialize() {
     canvas.addEventListener('mousedown', mouseDown, false);
     document.addEventListener('mouseup', mouseUp, false);
     canvas.addEventListener('mousemove', mouseMove, false);
+    document.addEventListener('keydown', keyDown, false);
+    document.addEventListener('keyup', keyUp, false);
     
     // Initiate Nodes World
     NodesWorld.initialize();
@@ -53,6 +55,21 @@ function mouseMove() {
   mouse.y = event.clientY - (window.innerHeight - canvas.height) / 2;
 }
 
+// Event handler for keyDown
+function keyDown(event) {
+  switch(event.keyCode){
+    case 80: // "p" for pause
+      toggleLoop();
+      event.preventDefault();
+      break;
+  }
+  console.log("KeyCode: " + event.keyCode)
+}
+
+// Event handler for keyUp
+function keyUp() {
+}
+
 // Initiate the loop
 function start() {
   intervalId = setInterval(loop, 1000/framerate);
@@ -61,6 +78,12 @@ function start() {
 // Clear the loop
 function pause() {
   clearInterval(intervalId);
+  intervalId = null;
+}
+
+// Toggle loop interval
+function toggleLoop() {
+  (intervalId) ? pause() : start();
 }
 
 // The loop

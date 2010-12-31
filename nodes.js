@@ -11,7 +11,8 @@ var framerate = 60;
 var intervalId; // Will hold the loop reference
 
 function initialize() {
-  // Get canvas element
+  
+  // Get the canvas element
   canvas = document.getElementById('world');
   
   if (canvas && canvas.getContext) {
@@ -72,7 +73,7 @@ var NodesWorld = new function () {
   // Physics
   this.boundaries = { x: 0, y: 0, width: 940, height: 660 };
   this.drag = 0.002; // Good val: 0.002
-  this.gravity = { force: 0.2, direction: Math.PI/2 }; // Good force: 0.2
+  this.gravity = { force: 0.2, direction: Math.PI/2 }; // Good force: 0.2 Direction: Math.PI/2 rad => 90° from +x axis CW
   
   // Content
   this.node_count = 10;
@@ -131,7 +132,7 @@ function Point (x, y) {
   this.strokecolor = 'rgba(0,160,255,1)';
 }
 
-// Update a point's position, optionally applying a drag and a force
+/* Update a point's position, optionally applying a drag and a force */
 Point.prototype.update = function (d, f) {
   this.drag(d);
   this.applyForce(f);
@@ -140,29 +141,34 @@ Point.prototype.update = function (d, f) {
   this.checkCollisions();
 }
 
+/* Apply the given drag as a coefficient */
 Point.prototype.drag = function (d) {
   d = d || 0;
   this.velocity.setMagnitude(this.velocity.magnitude * ( 1 - d ));
 }
 
+/* Apply the given force as a vector */
 Point.prototype.applyForce = function (f) {
   f = f || new Vector();
   this.velocity.setX( this.velocity.x + f.x / this.mass );
   this.velocity.setY( this.velocity.y + f.y / this.mass );
 }
 
+/* Returns the speed in pixels per time interval */
 Point.prototype.speed = function () {
   return this.velocity.magnitude;
 }
 
+/* Check World's Boundaries Collisions */
 Point.prototype.checkCollisions = function () {
-  // Check World's Boundaries Collisions
   bx = NodesWorld.boundaries.x + this.radius;
   bw = NodesWorld.boundaries.width - this.radius;
   by = NodesWorld.boundaries.y + this.radius;
   bh = NodesWorld.boundaries.height - this.radius;
   
+  // Check if the point's position is outside the x-axis boundaries
   if (this.x < bx || this.x > bw) {
+     // Reverse and damp x velocity
     this.velocity.setX(this.velocity.x * -this.bounce_damp);
     if (this.x < bx)
       this.x += 2 * (bx - this.x)
@@ -171,6 +177,7 @@ Point.prototype.checkCollisions = function () {
   }
   
   if (this.y < by || this.y > bh) {
+     // Reverse and damp y velocity
     this.velocity.setY(this.velocity.y * -this.bounce_damp);
     if (this.y < by)
       this.y += 2 * (by - this.y)

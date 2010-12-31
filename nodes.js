@@ -43,7 +43,7 @@ function initialize() {
 function mouseDown() {
   mouse.down = true;
   mouseMove();
-  NodesWorld.repel();
+  NodesWorld.blast();
 }
 
 // Event handler for mouseUp
@@ -112,6 +112,7 @@ var NodesWorld = new function () {
   // Content
   this.node_count = 100;
   this.nodes = new Array();
+  this.shock_waves = new Array();
   
   this.initialize = function() {
     // Transform gravity to a force vector
@@ -130,6 +131,16 @@ var NodesWorld = new function () {
     for( var i = 0, len = this.nodes.length; i < len; i++ ) {
       node = this.nodes[i];
       node.update(this.drag, this.gravity);
+    }
+    
+    // Update ShockWaves
+    for( var i = 0, len = this.shock_waves.length; i < len; i++ ) {
+      sw = this.shock_waves[i];
+      if (sw.color.a <= 0) {
+        this.shock_waves.splice(i,1) // FIXME: Little bug here. Bad to change the original array when walking through it!
+      } else {
+        sw.update();
+      }
     }
   }
   
@@ -151,19 +162,27 @@ var NodesWorld = new function () {
       context.fill();
       context.stroke();
     }
+    
+    // Draw shockwaves
+    for( var i = 0, len = this.shock_waves.length; i < len; i++ ) {
+      sw = this.shock_waves[i];
+      context.beginPath();
+      context.arc( sw.x, sw.y, sw.outer_radius, 0, Math.PI*2, true );
+      context.fillStyle = sw.outer_fillcolor,
+      context.fill();
+      context.beginPath();
+      context.arc( sw.x, sw.y, sw.inner_radius, 0, Math.PI*2, true );
+      context.fillStyle = sw.inner_fillcolor;
+      context.strokeStyle = sw.inner_strokecolor;
+      context.fill();
+      context.stroke();
+    }
   }
   
   // Blast away all nodes close to the mouse position
-  this.repel = function () {
-    mouse_pos = new Point(mouse.x, mouse.y);
-    for( var i = 0, len = this.nodes.length; i < len; i++ ) {
-      node = this.nodes[i];
-      node_dist = mouse_pos.distanceTo(node);
-      blast_magnitude = 800 * 1/(node_dist);
-      blast_angle = mouse_pos.angleTo(node);
-      f = new Vector(blast_magnitude, blast_angle);
-      node.applyForce(f);
-    }
+  this.blast = function () {
+    sw = new ShockWave(mouse.x, mouse.y, 800);
+    this.shock_waves.push(sw);
   }
 }
 
@@ -294,6 +313,41 @@ Node.prototype.checkCollisions = function () {
       this.y += (1 + this.bounce_damp) * (by - this.y)
     if (this.y > bh)
       this.y += (1 + this.bounce_damp) * (bh - this.y)
+  }
+}
+
+/* Defines a shock wave */
+ShockWave.prototype = new Point;
+ShockWave.prototype.constructor = ShockWave;
+function ShockWave (x, y, magnitude) {
+  Point.call(this, x, y);
+  this.magnitude = magnitude || 500;
+  this.time = 0;
+  this.inner_radius = 0;
+  this.outer_radius = 0;
+  this.color = {r: Math.round(Math.random()*255), g: Math.round(Math.random()*255), b: Math.round(Math.random()*255), a: 1};
+  
+  /* Auto-trigger the shock wave */
+  for( var i = 0, len = NodesWorld.nodes.length; i < len; i++ ) {
+    node = NodesWorld.nodes[i];
+    d = this.distanceTo(node);
+    m = this.magnitude * 1/d;
+    a = this.angleTo(node);
+    f = new Vector(m, a);
+    node.applyForce(f);
+  }
+}
+
+/* Update the shock wave */
+ShockWave.prototype.update = function (d, f) {
+  if (this.color.a >= 0) {
+    this.time += 1;
+    this.inner_radius += 0.2 * (100 / this.time);
+    this.outer_radius += 0.6 * (100 / this.time);
+    this.color.a -= 0.2 / (100 / this.time);
+    this.inner_fillcolor = 'rgba(255,255,255,'+this.color.a/4+')';
+    this.inner_strokecolor = 'rgba(255,255,255,'+this.color.a+')';
+    this.outer_fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+','+this.color.a/3+')';
   }
 }
 

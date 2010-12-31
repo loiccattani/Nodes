@@ -39,14 +39,12 @@ function initialize() {
 function mouseDown() {
   mouse.down = true;
   mouseMove();
-  event.preventDefault();
 }
 
 // Event handler for mouseUp
 function mouseUp() {
   mouse.down = false;
   mouseMove();
-  pause();
 }
 
 // Event handler for mouseMove
@@ -63,7 +61,7 @@ function keyDown(event) {
       event.preventDefault();
       break;
   }
-  console.log("KeyCode: " + event.keyCode)
+  // console.log("KeyCode: " + event.keyCode)
 }
 
 // Event handler for keyUp

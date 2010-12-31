@@ -26,9 +26,13 @@ function initialize() {
     canvas.addEventListener('mousemove', mouseMove, false);
     document.addEventListener('keydown', keyDown, false);
     document.addEventListener('keyup', keyUp, false);
+    window.addEventListener('resize', centerCanvas, false);
     
     // Initiate Nodes World
     NodesWorld.initialize();
+    
+    // Override canvas CSS positioning and center canvas on screen
+    centerCanvas();
     
     // Initiate the loop
     start();
@@ -67,6 +71,14 @@ function keyDown(event) {
 
 // Event handler for keyUp
 function keyUp() {
+}
+
+// Center the canvas in the window's body
+//   (Needed for mouse position to be accurate)
+function centerCanvas() {
+  canvas.style.position = 'absolute';
+  canvas.style.top = Math.round((window.innerHeight - canvas.height - 12) / 2) + 'px'; // 12 = 2 * 6 pixels border
+  canvas.style.left = Math.round((window.innerWidth - canvas.width - 12) / 2) + 'px';
 }
 
 // Initiate the loop
@@ -125,7 +137,7 @@ var NodesWorld = new function () {
   this.draw = function () {
     
     // Clear world
-    context.fillStyle = "rgba(0,0,0,1)";
+    context.fillStyle = "rgba(0,0,8,1)";
     context.fillRect(this.boundaries.x, this.boundaries.y, this.boundaries.width, this.boundaries.height);
     
     // Draw nodes

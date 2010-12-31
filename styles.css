@@ -10,7 +10,7 @@ html {
 
 body {
   margin: 0;
-  background-color: #111;
+  background-color: #111118;
 }
 
 #main {
@@ -19,8 +19,8 @@ body {
 }
 
 #world {
-  background-color: #111;
-  border: 6px solid #222;
+  background-color: #000008;
+  border: 6px solid #222228;
   /* border-radius */
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;

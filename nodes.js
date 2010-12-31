@@ -107,7 +107,7 @@ var NodesWorld = new function () {
   
     // Fill world with randomly positionned nodes
     for (var i = this.node_count - 1; i >= 0; i--){
-      node = new Point(Math.random() * this.boundaries.width, Math.random() * this.boundaries.height);
+      node = new Node(Math.random() * this.boundaries.width, Math.random() * this.boundaries.height);
       this.nodes.push(node);
     }
   }
@@ -159,68 +159,6 @@ var NodesWorld = new function () {
 function Point (x, y) {
   this.x = x || 0;
   this.y = y || 0;
-  this.velocity = new Vector();
-  this.mass = 1; // Can't be 0!
-  this.bounce_damp = 0.8;
-  this.radius = 8;
-  this.fillcolor = 'rgba(0,160,255,0.3)';
-  this.strokecolor = 'rgba(0,160,255,1)';
-}
-
-/* Update a point's position, optionally applying a drag and a force */
-Point.prototype.update = function (d, f) {
-  this.drag(d);
-  this.applyForce(f);
-  this.x += this.velocity.x;
-  this.y += this.velocity.y;
-  this.checkCollisions();
-}
-
-/* Apply the given drag as a coefficient */
-Point.prototype.drag = function (d) {
-  d = d || 0;
-  this.velocity.setMagnitude(this.velocity.magnitude * ( 1 - d ));
-}
-
-/* Apply the given force as a vector */
-Point.prototype.applyForce = function (f) {
-  f = f || new Vector();
-  this.velocity.setX( this.velocity.x + f.x / this.mass );
-  this.velocity.setY( this.velocity.y + f.y / this.mass );
-}
-
-/* Returns the speed in pixels per time interval */
-Point.prototype.speed = function () {
-  return this.velocity.magnitude;
-}
-
-/* Check World's Boundaries Collisions */
-Point.prototype.checkCollisions = function () {
-  bx = NodesWorld.boundaries.x + this.radius;
-  bw = NodesWorld.boundaries.width - this.radius;
-  by = NodesWorld.boundaries.y + this.radius;
-  bh = NodesWorld.boundaries.height - this.radius;
-  
-  // Check if the point's position is outside the x-axis boundaries
-  if (this.x < bx || this.x > bw) {
-     // Reverse and damp x velocity
-    this.velocity.setX(this.velocity.x * -this.bounce_damp);
-    // Reposition the point in the x axis minus the damp effect
-    if (this.x < bx)
-      this.x += (1 + this.bounce_damp) * (bx - this.x)
-    if (this.x > bw)
-      this.x += (1 + this.bounce_damp) * (bw - this.x)
-  }
-  
-  if (this.y < by || this.y > bh) {
-     // Reverse and damp y velocity
-    this.velocity.setY(this.velocity.y * -this.bounce_damp);
-    // Reposition the point in the y axis minus the damp effect
-    if (this.y < by)
-      this.y += (1 + this.bounce_damp) * (by - this.y)
-    if (this.y > bh)
-      this.y += (1 + this.bounce_damp) * (bh - this.y)
-  }
 }
 
 /* Returns the distance between this and a given point */
@@ -276,6 +214,75 @@ Vector.prototype.updateMA = function () {
 Vector.prototype.updateXY = function () {
   this.x = this.magnitude * Math.cos(this.angle);
   this.y = this.magnitude * Math.sin(this.angle);
+}
+
+/* Defines a node */
+Node.prototype = new Point;
+Node.prototype.constructor = Node;
+function Node (x, y) {
+  Point.call(this, x, y);
+  this.velocity = new Vector();
+  this.mass = 1; // Can't be 0!
+  this.bounce_damp = 0.8;
+  this.radius = 8;
+  this.fillcolor = 'rgba(0,160,255,0.3)';
+  this.strokecolor = 'rgba(0,160,255,1)';
+}
+
+/* Update a node's position, optionally applying a drag and a force */
+Node.prototype.update = function (d, f) {
+  this.drag(d);
+  this.applyForce(f);
+  this.x += this.velocity.x;
+  this.y += this.velocity.y;
+  this.checkCollisions();
+}
+
+/* Apply the given drag as a coefficient */
+Node.prototype.drag = function (d) {
+  d = d || 0;
+  this.velocity.setMagnitude(this.velocity.magnitude * ( 1 - d ));
+}
+
+/* Apply the given force as a vector */
+Node.prototype.applyForce = function (f) {
+  f = f || new Vector();
+  this.velocity.setX( this.velocity.x + f.x / this.mass );
+  this.velocity.setY( this.velocity.y + f.y / this.mass );
+}
+
+/* Returns the speed in pixels per time interval */
+Node.prototype.speed = function () {
+  return this.velocity.magnitude;
+}
+
+/* Check World's Boundaries Collisions */
+Node.prototype.checkCollisions = function () {
+  bx = NodesWorld.boundaries.x + this.radius;
+  bw = NodesWorld.boundaries.width - this.radius;
+  by = NodesWorld.boundaries.y + this.radius;
+  bh = NodesWorld.boundaries.height - this.radius;
+  
+  // Check if the node's position is outside the x-axis boundaries
+  if (this.x < bx || this.x > bw) {
+     // Reverse and damp x velocity
+    this.velocity.setX(this.velocity.x * -this.bounce_damp);
+    // Reposition the node in the x axis minus the damp effect
+    if (this.x < bx)
+      this.x += (1 + this.bounce_damp) * (bx - this.x)
+    if (this.x > bw)
+      this.x += (1 + this.bounce_damp) * (bw - this.x)
+  }
+  
+  if (this.y < by || this.y > bh) {
+     // Reverse and damp y velocity
+    this.velocity.setY(this.velocity.y * -this.bounce_damp);
+    // Reposition the node in the y axis minus the damp effect
+    if (this.y < by)
+      this.y += (1 + this.bounce_damp) * (by - this.y)
+    if (this.y > bh)
+      this.y += (1 + this.bounce_damp) * (bh - this.y)
+  }
 }
 
 initialize();

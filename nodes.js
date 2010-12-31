@@ -110,7 +110,7 @@ var NodesWorld = new function () {
   this.gravity = { force: 0.0, direction: Math.PI/2 }; // Good force: 0.2 Direction: Math.PI/2 rad => 90° from +x axis CW
   
   // Content
-  this.node_count = 10;
+  this.node_count = 100;
   this.nodes = new Array();
   
   this.initialize = function() {
@@ -159,7 +159,7 @@ var NodesWorld = new function () {
     for( var i = 0, len = this.nodes.length; i < len; i++ ) {
       node = this.nodes[i];
       node_dist = mouse_pos.distanceTo(node);
-      blast_magnitude = 1000 * 1/(node_dist*node_dist);
+      blast_magnitude = 800 * 1/(node_dist);
       blast_angle = mouse_pos.angleTo(node);
       f = new Vector(blast_magnitude, blast_angle);
       node.applyForce(f);
@@ -235,7 +235,7 @@ function Node (x, y) {
   Point.call(this, x, y);
   this.velocity = new Vector();
   this.mass = 1; // Can't be 0!
-  this.bounce_damp = 0.8;
+  this.bounce_damp = 0.6;
   this.radius = 8;
   this.fillcolor = 'rgba(0,160,255,0.3)';
   this.strokecolor = 'rgba(0,160,255,1)';

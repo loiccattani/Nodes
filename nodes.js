@@ -39,6 +39,7 @@ function initialize() {
 function mouseDown() {
   mouse.down = true;
   mouseMove();
+  NodesWorld.repel();
 }
 
 // Event handler for mouseUp
@@ -94,7 +95,7 @@ var NodesWorld = new function () {
   // Physics
   this.boundaries = { x: 0, y: 0, width: 940, height: 660 };
   this.drag = 0.002; // Good val: 0.002
-  this.gravity = { force: 0.2, direction: Math.PI/2 }; // Good force: 0.2 Direction: Math.PI/2 rad => 90° from +x axis CW
+  this.gravity = { force: 0.0, direction: Math.PI/2 }; // Good force: 0.2 Direction: Math.PI/2 rad => 90° from +x axis CW
   
   // Content
   this.node_count = 10;
@@ -137,6 +138,19 @@ var NodesWorld = new function () {
       context.lineWidth = 2;
       context.fill();
       context.stroke();
+    }
+  }
+  
+  // Blast away all nodes close to the mouse position
+  this.repel = function () {
+    mouse_pos = new Point(mouse.x, mouse.y);
+    for( var i = 0, len = this.nodes.length; i < len; i++ ) {
+      node = this.nodes[i];
+      node_dist = mouse_pos.distanceTo(node);
+      blast_magnitude = 1000 * 1/(node_dist*node_dist);
+      blast_angle = mouse_pos.angleTo(node);
+      f = new Vector(blast_magnitude, blast_angle);
+      node.applyForce(f);
     }
   }
 }
@@ -207,6 +221,20 @@ Point.prototype.checkCollisions = function () {
     if (this.y > bh)
       this.y += (1 + this.bounce_damp) * (bh - this.y)
   }
+}
+
+/* Returns the distance between this and a given point */
+Point.prototype.distanceTo = function (point) {
+  a = point.x - this.x;
+  b = point.y - this.y;
+  return Math.sqrt(a*a + b*b);
+}
+
+/* Returns the angle between this and a given point */
+Point.prototype.angleTo = function (point) {
+  x = point.x - this.x;
+  y = point.y - this.y;
+  return Math.atan2(y, x);
 }
 
 /* Defines a vector in a 2D space */

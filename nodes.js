@@ -170,19 +170,21 @@ Point.prototype.checkCollisions = function () {
   if (this.x < bx || this.x > bw) {
      // Reverse and damp x velocity
     this.velocity.setX(this.velocity.x * -this.bounce_damp);
+    // Reposition the point in the x axis minus the damp effect
     if (this.x < bx)
-      this.x += 2 * (bx - this.x)
+      this.x += (1 + this.bounce_damp) * (bx - this.x)
     if (this.x > bw)
-      this.x += 2 * (bw - this.x)
+      this.x += (1 + this.bounce_damp) * (bw - this.x)
   }
   
   if (this.y < by || this.y > bh) {
      // Reverse and damp y velocity
     this.velocity.setY(this.velocity.y * -this.bounce_damp);
+    // Reposition the point in the y axis minus the damp effect
     if (this.y < by)
-      this.y += 2 * (by - this.y)
+      this.y += (1 + this.bounce_damp) * (by - this.y)
     if (this.y > bh)
-      this.y += 2 * (bh - this.y)
+      this.y += (1 + this.bounce_damp) * (bh - this.y)
   }
 }
 

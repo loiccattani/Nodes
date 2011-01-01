@@ -250,9 +250,9 @@ Node.prototype.constructor = Node;
 function Node (x, y) {
   Point.call(this, x, y);
   this.velocity = new Vector();
-  this.mass = 1; // Can't be 0!
+  this.mass = 1+Math.random()*5; // Can't be 0!
   this.bounce_damp = 0.6;
-  this.radius = 8;
+  this.radius = 14 * Math.sqrt(this.mass/Math.PI); // mass is proportional to the node's area
   this.color = randomColor();
   this.fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',0.3)';
   this.strokecolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',1)';

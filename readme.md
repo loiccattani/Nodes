@@ -10,8 +10,7 @@ Releases tagged *R_x* are not meant to be any kind of incremental versionning to
 
 ## R_5
 
-Added visible velocity vector to nodes.
-And got rid of mass and color randomization.
+Added visible velocity vector to nodes. Got rid of mass and color randomization.
 
 ## R_4
 

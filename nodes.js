@@ -152,6 +152,12 @@ var NodesWorld = new function () {
     for( var i = 0, len = this.nodes.length; i < len; i++ ) {
       node = this.nodes[i];
       context.beginPath();
+      context.moveTo(node.x, node.y);
+      context.lineTo(node.x + node.velocity.x * 5, node.y + node.velocity.y * 5);
+      context.lineWidth = 1;
+      context.strokeStyle = 'rgba(255,255,255,1)';
+      context.stroke();
+      context.beginPath();
       context.arc( node.x, node.y, node.radius, 0, Math.PI*2, true );
       context.fillStyle = node.fillcolor;
       context.strokeStyle = node.strokecolor;
@@ -250,10 +256,10 @@ Node.prototype.constructor = Node;
 function Node (x, y) {
   Point.call(this, x, y);
   this.velocity = new Vector();
-  this.mass = 1+Math.random()*5; // Can't be 0!
+  this.mass = 1; // Can't be 0!
   this.bounce_damp = 0.6;
-  this.radius = 14 * Math.sqrt(this.mass/Math.PI); // mass is proportional to the node's area
-  this.color = randomColor();
+  this.radius = 8;
+  this.color = { r: 220, g: 10, b: 10, a: 1};
   this.fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',0.3)';
   this.strokecolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',1)';
 }

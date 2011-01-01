@@ -8,6 +8,11 @@ Trying to get a reusable and pretty accurate set of objects and methods to deal 
 
 Releases tagged *R_x* are not meant to be any kind of incremental versionning to the playground as a whole. Instead they are milestones to interesting behaviors.
 
+## R_5
+
+Added visible velocity vector to nodes.
+And got rid of mass and color randomization.
+
 ## R_4
 
 Randomized nodes mass and radius.

@@ -294,8 +294,10 @@ Node.prototype.checkCollisions = function () {
   
   // Check if the node's position is outside the x-axis boundaries
   if (this.x < bx || this.x > bw) {
-     // Reverse and damp x velocity
+    // Reverse and damp x velocity
     this.velocity.setX(this.velocity.x * -this.bounce_damp);
+    // Damp y velocity a bit
+    this.velocity.setY(this.velocity.y * (this.bounce_damp*1.1));
     // Reposition the node in the x axis minus the damp effect
     if (this.x < bx)
       this.x += (1 + this.bounce_damp) * (bx - this.x)
@@ -303,9 +305,12 @@ Node.prototype.checkCollisions = function () {
       this.x += (1 + this.bounce_damp) * (bw - this.x)
   }
   
+  // Check if the node's position is outside the y-axis boundaries
   if (this.y < by || this.y > bh) {
-     // Reverse and damp y velocity
+    // Reverse and damp y velocity
     this.velocity.setY(this.velocity.y * -this.bounce_damp);
+    // Damp x velocity a bit
+    this.velocity.setX(this.velocity.x * (this.bounce_damp*1.1));
     // Reposition the node in the y axis minus the damp effect
     if (this.y < by)
       this.y += (1 + this.bounce_damp) * (by - this.y)

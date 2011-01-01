@@ -136,11 +136,8 @@ var NodesWorld = new function () {
     // Update ShockWaves
     for( var i = 0, len = this.shock_waves.length; i < len; i++ ) {
       sw = this.shock_waves[i];
-      if (sw.color.a <= 0) {
-        this.shock_waves.splice(i,1) // FIXME: Little bug here. Bad to change the original array when walking through it!
-      } else {
-        sw.update();
-      }
+      if (sw) // If shockwave still exists, either update it or remove it from array if alpha == 0
+        (sw.color.a == 0) ? this.shock_waves.splice(i,1) : sw.update();
     }
   }
   
@@ -322,9 +319,8 @@ ShockWave.prototype.constructor = ShockWave;
 function ShockWave (x, y, magnitude) {
   Point.call(this, x, y);
   this.magnitude = magnitude || 500;
-  this.time = 0;
-  this.inner_radius = 0;
-  this.outer_radius = 0;
+  this.inner_radius = 20;
+  this.outer_radius = 60;
   this.color = {r: Math.round(Math.random()*255), g: Math.round(Math.random()*255), b: Math.round(Math.random()*255), a: 1};
   
   /* Auto-trigger the shock wave */
@@ -340,15 +336,14 @@ function ShockWave (x, y, magnitude) {
 
 /* Update the shock wave */
 ShockWave.prototype.update = function (d, f) {
-  if (this.color.a >= 0) {
-    this.time += 1;
-    this.inner_radius += 0.2 * (100 / this.time);
-    this.outer_radius += 0.6 * (100 / this.time);
-    this.color.a -= 0.2 / (100 / this.time);
-    this.inner_fillcolor = 'rgba(255,255,255,'+this.color.a/4+')';
-    this.inner_strokecolor = 'rgba(255,255,255,'+this.color.a+')';
-    this.outer_fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+','+this.color.a/3+')';
-  }
+  this.inner_radius += (80-this.inner_radius)/5
+  this.outer_radius += (240-this.outer_radius)/8
+  this.color.a -= (this.color.a/10)
+  this.inner_fillcolor = 'rgba(255,255,255,'+this.color.a/4+')';
+  this.inner_strokecolor = 'rgba(255,255,255,'+this.color.a+')';
+  this.outer_fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+','+this.color.a/3+')';
+  if (this.color.a < 0.02)
+    this.color.a = 0;
 }
 
 initialize();

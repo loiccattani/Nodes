@@ -253,8 +253,9 @@ function Node (x, y) {
   this.mass = 1; // Can't be 0!
   this.bounce_damp = 0.6;
   this.radius = 8;
-  this.fillcolor = 'rgba(0,160,255,0.3)';
-  this.strokecolor = 'rgba(0,160,255,1)';
+  this.color = randomColor();
+  this.fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',0.3)';
+  this.strokecolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',1)';
 }
 
 /* Update a node's position, optionally applying a drag and a force */
@@ -321,7 +322,7 @@ function ShockWave (x, y, magnitude) {
   this.magnitude = magnitude || 500;
   this.inner_radius = 20;
   this.outer_radius = 60;
-  this.color = {r: Math.round(Math.random()*255), g: Math.round(Math.random()*255), b: Math.round(Math.random()*255), a: 1};
+  this.color = randomColor();
   
   /* Auto-trigger the shock wave */
   for( var i = 0, len = NodesWorld.nodes.length; i < len; i++ ) {
@@ -344,6 +345,10 @@ ShockWave.prototype.update = function (d, f) {
   this.outer_fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+','+this.color.a/3+')';
   if (this.color.a < 0.02)
     this.color.a = 0;
+}
+
+function randomColor() {
+  return {r: Math.round(Math.random()*255), g: Math.round(Math.random()*255), b: Math.round(Math.random()*255), a: 1};
 }
 
 initialize();

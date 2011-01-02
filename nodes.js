@@ -43,6 +43,7 @@ function initialize() {
 function mouseDown() {
   mouse.down = true;
   mouseMove();
+  NodesWorld.blast();
 }
 
 // Event handler for mouseUp
@@ -64,7 +65,7 @@ function keyDown(event) {
       toggleLoop();
       event.preventDefault();
       break;
-    case 66: // "b" for blast
+    case 83: // "s" for shockwave
       NodesWorld.blast();
       event.preventDefault();
       break;

@@ -150,7 +150,7 @@ var NodesWorld = new function () {
     
     // Clear world
     context.globalCompositeOperation = 'source-over';
-    context.fillStyle = "rgba(0,0,8,1)";
+    context.fillStyle = "rgba(0,0,0,1)";
     context.fillRect(this.boundaries.x, this.boundaries.y, this.boundaries.width, this.boundaries.height);
     context.globalCompositeOperation = 'lighter';
     
@@ -264,9 +264,9 @@ function Node (x, y) {
   this.velocity = new Vector();
   this.mass = 1; // Can't be 0!
   this.bounce_damp = 0.6;
-  this.radius = 20;
-  this.color = { r: 220, g: 10, b: 10, a: 1};
-  this.fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',0.8)';
+  this.radius = 12;
+  this.color = { r: 10, g: 10, b: 10, a: 1};
+  this.fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',0.5)';
   this.strokecolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',1)';
 }
 

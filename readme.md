@@ -8,6 +8,14 @@ Trying to get a reusable and pretty accurate set of objects and methods to deal 
 
 Releases tagged *R_x* are not meant to be any kind of incremental versionning to the playground as a whole. Instead they are milestones to interesting behaviors.
 
+## R_6
+
+The whole is now more like a shockwave simulator with the help of context.globalCompositeOperation = 'lighter'
+
+Need performance improvement! Target: 100000 particles at 60fps
+
+That should be pretty easy switching to requestAnimationFrame, removing all not really important math operations, switching to squares... or is it better to start off as a whole  new project?
+
 ## R_5.1
 
 Added a footer note about keyboard controls. Shock waves now also triggered by the "s" key.

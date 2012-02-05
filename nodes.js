@@ -273,7 +273,7 @@ function Node (x, y) {
 /* Update a node's position, optionally applying a drag and a force */
 Node.prototype.update = function (d, f) {
   this.drag(d);
-  this.applyForce(f);
+  //this.applyForce(f);
   this.x += this.velocity.x;
   this.y += this.velocity.y;
   this.checkCollisions();
@@ -282,14 +282,15 @@ Node.prototype.update = function (d, f) {
 /* Apply the given drag as a coefficient */
 Node.prototype.drag = function (d) {
   d = d || 0;
-  this.velocity.setMagnitude(this.velocity.magnitude * ( 1 - d ));
+  this.velocity.x = this.velocity.x * ( 1 - d )
+  this.velocity.y = this.velocity.y * ( 1 - d )
 }
 
 /* Apply the given force as a vector */
 Node.prototype.applyForce = function (f) {
   f = f || new Vector();
-  this.velocity.setX( this.velocity.x + f.x / this.mass );
-  this.velocity.setY( this.velocity.y + f.y / this.mass );
+  this.velocity.x = this.velocity.x + f.x / this.mass;
+  this.velocity.y = this.velocity.y + f.y / this.mass;
 }
 
 /* Returns the speed in pixels per time interval */
@@ -307,9 +308,9 @@ Node.prototype.checkCollisions = function () {
   // Check if the node's position is outside the x-axis boundaries
   if (this.x < bx || this.x > bw) {
     // Reverse and damp x velocity
-    this.velocity.setX(this.velocity.x * -this.bounce_damp);
+    this.velocity.x = (this.velocity.x * -this.bounce_damp);
     // Damp y velocity
-    this.velocity.setY(this.velocity.y * this.bounce_damp);
+    this.velocity.y = (this.velocity.y * this.bounce_damp);
     // Reposition the node in the x axis minus the damp effect
     if (this.x < bx)
       this.x += (1 + this.bounce_damp) * (bx - this.x)
@@ -320,9 +321,9 @@ Node.prototype.checkCollisions = function () {
   // Check if the node's position is outside the y-axis boundaries
   if (this.y < by || this.y > bh) {
     // Reverse and damp y velocity
-    this.velocity.setY(this.velocity.y * -this.bounce_damp);
+    this.velocity.y = (this.velocity.y * -this.bounce_damp);
     // Damp x velocity
-    this.velocity.setX(this.velocity.x * this.bounce_damp);
+    this.velocity.x = (this.velocity.x * this.bounce_damp);
     // Reposition the node in the y axis minus the damp effect
     if (this.y < by)
       this.y += (1 + this.bounce_damp) * (by - this.y)

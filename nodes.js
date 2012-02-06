@@ -45,15 +45,15 @@ function mouseDown() {
   mouse.down = true;
   mouseMove();
   mouseDownTime = (new Date).getTime();
+  sw = new ShockWave(mouse.x, mouse.y, 0);
+  NodesWorld.shock_waves.push(sw);
 }
 
 // Event handler for mouseUp
 function mouseUp() {
   mouse.down = false;
   mouseMove();
-  now = (new Date).getTime();
-  magnitude = ((now - mouseDownTime) / 1000) * 800;
-  NodesWorld.blast(magnitude);
+  NodesWorld.shock_waves[NodesWorld.shock_waves.length-1].blast();
 }
 
 // Event handler for mouseMove
@@ -184,9 +184,10 @@ var NodesWorld = new function () {
   
   // Blast away all nodes close to the mouse position
   this.blast = function (magnitude) {
-    magnitude = magnitude || 800;
-    sw = new ShockWave(mouse.x, mouse.y, magnitude);
+    sw = new ShockWave(mouse.x, mouse.y);
+    sw.magnitude = magnitude || 800;
     this.shock_waves.push(sw);
+    NodesWorld.shock_waves[NodesWorld.shock_waves.length-1].blast();
   }
 }
 
@@ -330,14 +331,43 @@ Node.prototype.checkCollisions = function () {
 /* Defines a shock wave */
 ShockWave.prototype = new Point;
 ShockWave.prototype.constructor = ShockWave;
-function ShockWave (x, y, magnitude) {
+function ShockWave (x, y) {
   Point.call(this, x, y);
-  this.magnitude = magnitude || 500;
-  this.inner_radius = magnitude / 40;
-  this.outer_radius = magnitude / 12;
+  this.magnitude = 0;
+  this.inner_radius = 20;
+  this.outer_radius = 60;
   this.color = randomColor();
+  this.inner_fillcolor = 'rgba(255,255,255,0.1)';
+  this.inner_strokecolor = 'rgba(255,255,255,0.8)';
+  this.outer_fillcolor = 'rgba(255,255,255,0)';
+  this.growing = 1;
+
+}
+
+/* Update the shock wave */
+ShockWave.prototype.update = function () {
+  if (this.growing) {
+    now = (new Date).getTime();
+    this.magnitude = ((now - mouseDownTime) / 1000) * 800;
+    this.inner_radius = this.magnitude / 10
+  } else {
+    this.inner_radius += (this.magnitude / 10 - this.inner_radius)/5
+    this.outer_radius += (this.magnitude / 3.2 - this.outer_radius)/8
+    this.color.a -= (this.color.a/10)
+    this.inner_fillcolor = 'rgba(255,255,255,'+this.color.a/4+')';
+    this.inner_strokecolor = 'rgba(255,255,255,'+this.color.a+')';
+    this.outer_fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+','+this.color.a/3+')';
+    if (this.color.a < 0.02)
+      this.color.a = 0;
+  };
+}
+
+ShockWave.prototype.blast = function () {
+  this.growing = 0;
+  this.inner_radius = this.magnitude / 40;
+  this.outer_radius = this.magnitude / 12;
   
-  /* Auto-trigger the shock wave */
+  /* Trigger the shock wave */
   for( var i = 0, len = NodesWorld.nodes.length; i < len; i++ ) {
     node = NodesWorld.nodes[i];
     d = this.distanceTo(node);
@@ -346,18 +376,6 @@ function ShockWave (x, y, magnitude) {
     f = new Vector(m, a);
     node.applyForce(f);
   }
-}
-
-/* Update the shock wave */
-ShockWave.prototype.update = function (d, f) {
-  this.inner_radius += (this.magnitude / 10 - this.inner_radius)/5
-  this.outer_radius += (this.magnitude / 3.2 - this.outer_radius)/8
-  this.color.a -= (this.color.a/10)
-  this.inner_fillcolor = 'rgba(255,255,255,'+this.color.a/4+')';
-  this.inner_strokecolor = 'rgba(255,255,255,'+this.color.a+')';
-  this.outer_fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+','+this.color.a/3+')';
-  if (this.color.a < 0.02)
-    this.color.a = 0;
 }
 
 function randomColor() {

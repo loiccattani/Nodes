@@ -105,6 +105,7 @@ function toggleLoop() {
 function loop() {
   NodesWorld.update();
   NodesWorld.draw();
+  stats.update();
 }
 
 var NodesWorld = new function () {

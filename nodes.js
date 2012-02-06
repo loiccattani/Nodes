@@ -70,7 +70,7 @@ function keyDown(event) {
       event.preventDefault();
       break;
     case 83: // "s" for shockwave
-      NodesWorld.blast();
+      NodesWorld.blast(800);
       event.preventDefault();
       break;
   }
@@ -185,9 +185,8 @@ var NodesWorld = new function () {
   // Blast away all nodes close to the mouse position
   this.blast = function (magnitude) {
     sw = new ShockWave(mouse.x, mouse.y);
-    sw.magnitude = magnitude || 800;
     this.shock_waves.push(sw);
-    NodesWorld.shock_waves[NodesWorld.shock_waves.length-1].blast();
+    NodesWorld.shock_waves[NodesWorld.shock_waves.length-1].blast(magnitude);
   }
 }
 
@@ -348,7 +347,7 @@ function ShockWave (x, y) {
 ShockWave.prototype.update = function () {
   if (this.growing) {
     now = (new Date).getTime();
-    this.magnitude = ((now - mouseDownTime) / 1000) * 800;
+    this.magnitude = ((now - mouseDownTime) / 1000) * 800; // To show the magnitude growing
     this.inner_radius = this.magnitude / 10
   } else {
     this.inner_radius += (this.magnitude / 10 - this.inner_radius)/5
@@ -362,9 +361,9 @@ ShockWave.prototype.update = function () {
   };
 }
 
-ShockWave.prototype.blast = function () {
+ShockWave.prototype.blast = function (magnitude) {
   now = (new Date).getTime();
-  this.magnitude = ((now - mouseDownTime) / 1000) * 800;
+  this.magnitude = magnitude || ((now - mouseDownTime) / 1000) * 800;
   this.growing = 0;
   this.inner_radius = this.magnitude / 40;
   this.outer_radius = this.magnitude / 12;

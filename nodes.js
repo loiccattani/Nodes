@@ -125,7 +125,7 @@ var NodesWorld = new function () {
   
     // Fill world with randomly positionned nodes
     for (var i = this.node_count - 1; i >= 0; i--){
-      node = new Node(Math.random() * (this.boundaries.width-24), Math.random() * (this.boundaries.height-24));
+      node = new Node(Math.random() * (this.boundaries.width-1), Math.random() * (this.boundaries.height-1));
       this.nodes.push(node);
     }
   }
@@ -153,7 +153,7 @@ var NodesWorld = new function () {
     context.globalCompositeOperation = 'source-over';
     context.fillStyle = "rgba(0,0,0,1)";
     context.fillRect(this.boundaries.x, this.boundaries.y, this.boundaries.width, this.boundaries.height);
-    context.globalCompositeOperation = 'lighter';
+    // context.globalCompositeOperation = 'lighter';
     
     // Draw nodes
     for( var i = 0, len = this.nodes.length; i < len; i++ ) {
@@ -252,10 +252,10 @@ Node.prototype.constructor = Node;
 function Node (x, y) {
   Point.call(this, x, y);
   this.velocity = new Vector();
-  this.mass = 1; // Can't be 0!
+  this.mass = 10; // Can't be 0!
   this.bounce_damp = 0.6;
-  this.size = 24;
-  this.color = { r: 10, g: 10, b: 10, a: 1};
+  this.size = 1;
+  this.color = { r: 255, g: 255, b: 255, a: 1};
   this.fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',0.5)';
   this.strokecolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',1)';
 }

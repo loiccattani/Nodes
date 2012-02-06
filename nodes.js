@@ -125,7 +125,7 @@ var NodesWorld = new function () {
   
     // Fill world with randomly positionned nodes
     for (var i = this.node_count - 1; i >= 0; i--){
-      node = new Node(Math.random() * this.boundaries.width, Math.random() * this.boundaries.height);
+      node = new Node(Math.random() * (this.boundaries.width-24), Math.random() * (this.boundaries.height-24));
       this.nodes.push(node);
     }
   }

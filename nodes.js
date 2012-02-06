@@ -158,10 +158,8 @@ var NodesWorld = new function () {
     // Draw nodes
     for( var i = 0, len = this.nodes.length; i < len; i++ ) {
       node = this.nodes[i];
-      context.beginPath();
-      context.arc( node.x, node.y, node.radius, 0, Math.PI*2, true );
       context.fillStyle = node.fillcolor;
-      context.fill();
+      context.fillRect( node.x, node.y, node.size, node.size );
     }
     
     // Draw shockwaves
@@ -256,7 +254,7 @@ function Node (x, y) {
   this.velocity = new Vector();
   this.mass = 1; // Can't be 0!
   this.bounce_damp = 0.6;
-  this.radius = 12;
+  this.size = 24;
   this.color = { r: 10, g: 10, b: 10, a: 1};
   this.fillcolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',0.5)';
   this.strokecolor = 'rgba('+this.color.r+','+this.color.g+','+this.color.b+',1)';
@@ -292,10 +290,10 @@ Node.prototype.speed = function () {
 
 /* Check World's Boundaries Collisions */
 Node.prototype.checkCollisions = function () {
-  bx = NodesWorld.boundaries.x + this.radius;
-  bw = NodesWorld.boundaries.width - this.radius;
-  by = NodesWorld.boundaries.y + this.radius;
-  bh = NodesWorld.boundaries.height - this.radius;
+  bx = NodesWorld.boundaries.x;
+  bw = NodesWorld.boundaries.width - this.size;
+  by = NodesWorld.boundaries.y;
+  bh = NodesWorld.boundaries.height - this.size;
   
   // Check if the node's position is outside the x-axis boundaries
   if (this.x < bx || this.x > bw) {

@@ -7,6 +7,7 @@
 var canvas;
 var context;
 var mouse = { x: 0, y: 0, down: false };
+var mouseDownTime = 0;
 var framerate = 60;
 var intervalId; // Will hold the loop reference
 
@@ -21,7 +22,7 @@ function initialize() {
     context = canvas.getContext('2d');
     
     // Register Event Listeners
-    canvas.addEventListener('mousedown', mouseDown, false);
+    document.addEventListener('mousedown', mouseDown, false);
     document.addEventListener('mouseup', mouseUp, false);
     canvas.addEventListener('mousemove', mouseMove, false);
     document.addEventListener('keydown', keyDown, false);
@@ -43,13 +44,16 @@ function initialize() {
 function mouseDown() {
   mouse.down = true;
   mouseMove();
-  NodesWorld.blast();
+  mouseDownTime = (new Date).getTime();
 }
 
 // Event handler for mouseUp
 function mouseUp() {
   mouse.down = false;
   mouseMove();
+  now = (new Date).getTime();
+  magnitude = ((now - mouseDownTime) / 1000) * 800;
+  NodesWorld.blast(magnitude);
 }
 
 // Event handler for mouseMove
@@ -179,8 +183,9 @@ var NodesWorld = new function () {
   }
   
   // Blast away all nodes close to the mouse position
-  this.blast = function () {
-    sw = new ShockWave(mouse.x, mouse.y, 800);
+  this.blast = function (magnitude) {
+    magnitude = magnitude || 800;
+    sw = new ShockWave(mouse.x, mouse.y, magnitude);
     this.shock_waves.push(sw);
   }
 }
@@ -328,8 +333,8 @@ ShockWave.prototype.constructor = ShockWave;
 function ShockWave (x, y, magnitude) {
   Point.call(this, x, y);
   this.magnitude = magnitude || 500;
-  this.inner_radius = 20;
-  this.outer_radius = 60;
+  this.inner_radius = magnitude / 40;
+  this.outer_radius = magnitude / 12;
   this.color = randomColor();
   
   /* Auto-trigger the shock wave */
@@ -345,8 +350,8 @@ function ShockWave (x, y, magnitude) {
 
 /* Update the shock wave */
 ShockWave.prototype.update = function (d, f) {
-  this.inner_radius += (80-this.inner_radius)/5
-  this.outer_radius += (240-this.outer_radius)/8
+  this.inner_radius += (this.magnitude / 10 - this.inner_radius)/5
+  this.outer_radius += (this.magnitude / 3.2 - this.outer_radius)/8
   this.color.a -= (this.color.a/10)
   this.inner_fillcolor = 'rgba(255,255,255,'+this.color.a/4+')';
   this.inner_strokecolor = 'rgba(255,255,255,'+this.color.a+')';

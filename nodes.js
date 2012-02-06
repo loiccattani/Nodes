@@ -8,7 +8,8 @@ var canvas;
 var context;
 var mouse = { x: 0, y: 0, down: false };
 var framerate = 60;
-var intervalId; // Will hold the loop reference
+var AnimID = 0; // The requestAnimationFrame Polyfill's setTimeout ID
+var gameState = 0;
 
 function initialize() {
   
@@ -87,18 +88,19 @@ function centerCanvas() {
 
 // Initiate the loop
 function start() {
-  intervalId = setInterval(loop, 1000/framerate);
+  gameState = 1;
+  loop();
 }
 
 // Clear the loop
 function pause() {
-  clearInterval(intervalId);
-  intervalId = null;
+  gameState = 0;
+  window.cancelAnimationFrame(animID);
 }
 
 // Toggle loop interval
 function toggleLoop() {
-  (intervalId) ? pause() : start();
+  (gameState) ? pause() : start();
 }
 
 // The loop
@@ -106,6 +108,8 @@ function loop() {
   NodesWorld.update();
   NodesWorld.draw();
   stats.update();
+  if (gameState)
+    animID = window.requestAnimationFrame(loop, canvas);
 }
 
 var NodesWorld = new function () {

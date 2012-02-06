@@ -363,6 +363,8 @@ ShockWave.prototype.update = function () {
 }
 
 ShockWave.prototype.blast = function () {
+  now = (new Date).getTime();
+  this.magnitude = ((now - mouseDownTime) / 1000) * 800;
   this.growing = 0;
   this.inner_radius = this.magnitude / 40;
   this.outer_radius = this.magnitude / 12;

@@ -162,19 +162,10 @@ var NodesWorld = new function () {
     // Draw nodes
     for( var i = 0, len = this.nodes.length; i < len; i++ ) {
       node = this.nodes[i];
-      //context.beginPath();
-      //context.moveTo(node.x, node.y);
-      //context.lineTo(node.x + node.velocity.x * 5, node.y + node.velocity.y * 5);
-      //context.lineWidth = 1;
-      //context.strokeStyle = 'rgba(255,255,255,1)';
-      //context.stroke();
       context.beginPath();
       context.arc( node.x, node.y, node.radius, 0, Math.PI*2, true );
       context.fillStyle = node.fillcolor;
-      //context.strokeStyle = node.strokecolor;
-      //context.lineWidth = 2;
       context.fill();
-      //context.stroke();
     }
     
     // Draw shockwaves

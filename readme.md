@@ -6,7 +6,18 @@ Trying to get a reusable and pretty accurate set of objects and methods to deal 
 
 # History
 
-Releases tagged *R_x* are not meant to be any kind of incremental versionning to the playground as a whole. Instead they are milestones to interesting behaviors.
+Releases tagged *R_x* are not meant to be any kind of incremental versionning to the playground as a whole. Instead they are milestones of interesting behaviors.
+
+## R_7
+
+Performance greatly improved, but still far from last release's target. WebGL required to continue.
+Branched-out requestAnimationFrame polyfill as it seem slightly slower (by 5-6 fps), need more testing.
+
+Non performance-related changes:
+
+    - Switched to 1px squares instead of circles
+    - Added proportional shockwaves based on mouse down time.
+    - Added Mr.doob's Stat.js framerate monitor
 
 ## R_6
 
